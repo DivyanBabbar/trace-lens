@@ -31,6 +31,6 @@ def load_demo() -> dict[str,object]:
       SignalIn(timestamp=t+timedelta(minutes=5),service="orders-api",kind="alert",name="checkout_latency_high",severity="warning",message="p95 latency above threshold"),
       SignalIn(timestamp=t+timedelta(minutes=6),service="inventory-api",kind="metric",name="request_rate",value=72,severity="info",message="Normal request rate"),
     ]
-    return {"accepted": add_signals(signals)}
+    return {"accepted": add_signals(signals), "started_at": t.isoformat(), "ended_at": (t + timedelta(minutes=8)).isoformat()}
 @app.get("/",include_in_schema=False)
 def home() -> dict[str,str]: return {"service":"TraceLens RCA API","docs":"/docs","demo":"POST /v1/demo/load"}
