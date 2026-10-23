@@ -11,7 +11,7 @@ TraceLens correlates deployment events, logs, metrics, traces, and alerts into r
 - Analyze an incident window across service boundaries
 - Rank deterministic hypotheses using temporal precedence, error density, severity, deployments, and downstream blast radius
 - Return an evidence timeline, confidence score, and concrete next checks
-- Load an end-to-end synthetic incident instantly
+- Load an end-to-end synthetic incident and inspect it in the browser dashboard
 - OpenAPI docs, Docker Compose, CLI, pytest, Ruff, and CodeQL
 
 ## Quick start
@@ -25,13 +25,24 @@ pip install -e '.[dev]'
 tracelens serve
 ```
 
-Open <http://127.0.0.1:8000/docs>, call `POST /v1/demo/load`, and use its `started_at` and `ended_at` fields in `POST /v1/incidents/analyze`. The demo inserts events relative to current UTC:
+Open <http://127.0.0.1:8000> and select **Load demo scenario**. TraceLens adds six synthetic signals across four services, analyzes their time window, and shows ranked service leads with supporting evidence, next checks, and a timeline. No API keys or external services are required.
+
+To change the local data directory, copy `.env.example` to `.env` (`Copy-Item .env.example .env` in PowerShell).
+
+### 2–5 minute demo
+
+1. Load the synthetic scenario and review the leading `payments-api` hypothesis.
+2. Compare its deployment and database timeout evidence with the downstream `checkout-api` trace.
+3. Read the next checks and the causality disclaimer.
+4. Change the time window or filter to a service, then analyze again.
+
+For an API-only walkthrough, the demo endpoint returns the analysis window:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/v1/demo/load
 ```
 
-Then submit a window covering the last 10 minutes to `POST /v1/incidents/analyze`. Or run `docker compose up --build` and use the same API at port 8000.
+Pass the returned `started_at` and `ended_at` values to `POST /v1/incidents/analyze`. The dashboard runs at `/`, and the interactive API reference is at `/docs`. Docker Compose is also available with `docker compose up --build`.
 
 ## Example API
 
@@ -66,7 +77,7 @@ POST /v1/incidents/analyze
 }
 ```
 
-Routes: `POST /v1/signals`, `POST /v1/signals/batch`, `POST /v1/demo/load`, `POST /v1/incidents/analyze`, `GET /health`.
+Routes: `GET /`, `GET /health`, `POST /v1/signals`, `POST /v1/signals/batch`, `POST /v1/demo/load`, and `POST /v1/incidents/analyze`.
 
 ## How ranking works
 
@@ -83,13 +94,13 @@ The MVP intentionally avoids asking a language model to decide what broke. A fut
 | Variable | Default | Purpose |
 |---|---|---|
 | `TRACELENS_DATA_DIR` | `data` | SQLite database directory |
-| `TRACELENS_INCIDENT_WINDOW_MINUTES` | `15` | Default window for future integrations |
 
 ## Development
 
 ```bash
 pip install -e '.[dev]'
 ruff check .
+ruff format --check .
 pytest
 ```
 

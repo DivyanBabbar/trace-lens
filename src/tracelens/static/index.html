@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#10212b" />
+    <meta
+      name="description"
+      content="TraceLens turns service telemetry into ranked incident hypotheses with evidence you can inspect."
+    />
+    <title>TraceLens — Incident Review</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="TraceLens home">
+        <span class="brand-mark" aria-hidden="true">T</span>
+        <span>TraceLens<small>INCIDENT REVIEW</small></span>
+      </a>
+      <div class="top-actions">
+        <span class="local-pill"><i></i> LOCAL ANALYSIS</span>
+        <a class="docs-link" href="/docs">API docs <span aria-hidden="true">↗</span></a>
+        <button class="demo-button" id="loadDemo" type="button">Load demo scenario <span aria-hidden="true">↗</span></button>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="intro">
+        <p class="eyebrow"><span></span> EVIDENCE-FIRST ROOT CAUSE ANALYSIS</p>
+        <h1>Find the first <em>domino.</em></h1>
+        <p class="intro-copy">
+          Follow a deployment through logs, metrics, traces, and alerts. TraceLens ranks the most
+          plausible service leads and shows the evidence behind each one.
+        </p>
+      </section>
+
+      <div id="notice" class="notice" role="status" aria-live="polite">
+        Ready when you are. Load the synthetic incident to see the full workflow.
+      </div>
+
+      <section class="metrics" aria-label="Incident summary">
+        <article class="metric-card">
+          <span class="metric-label">SIGNALS ANALYZED</span>
+          <strong id="signalCount">—</strong>
+          <small>events in this window</small>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">SERVICES AFFECTED</span>
+          <strong id="serviceCount">—</strong>
+          <small>distinct services observed</small>
+        </article>
+        <article class="metric-card">
+          <span class="metric-label">LEADING HYPOTHESIS</span>
+          <strong id="leadConfidence">—</strong>
+          <small>evidence score, not probability</small>
+        </article>
+        <article class="metric-card window-card">
+          <span class="metric-label">ANALYSIS WINDOW</span>
+          <strong id="windowSummary">Choose a time range</strong>
+          <small id="impactSummary">The score is a prioritization aid.</small>
+        </article>
+      </section>
+
+      <section class="workbench">
+        <aside class="window-panel">
+          <p class="eyebrow">INVESTIGATION WINDOW</p>
+          <h2>Choose the time range</h2>
+          <p class="panel-copy">Use the example incident or analyze telemetry you have already ingested.</p>
+          <form id="analysisForm">
+            <label for="startTime">Start time</label>
+            <input id="startTime" name="started_at" type="datetime-local" required />
+            <label for="endTime">End time</label>
+            <input id="endTime" name="ended_at" type="datetime-local" required />
+            <label for="serviceFilter">Service filter <span>OPTIONAL</span></label>
+            <input id="serviceFilter" name="service" type="text" maxlength="120" placeholder="All services" />
+            <button class="analyze-button" id="analyzeButton" type="submit">
+              Analyze incident window <span aria-hidden="true">→</span>
+            </button>
+          </form>
+          <div class="method-note">
+            <span class="note-icon" aria-hidden="true">i</span>
+            <p><strong>Deterministic by design.</strong> The ranking uses time order, severity, error signals, deployment proximity, and downstream failures. Every result links back to its source events.</p>
+          </div>
+        </aside>
+
+        <div class="results-column">
+          <div id="emptyState" class="empty-state">
+            <span class="empty-icon" aria-hidden="true">⌁</span>
+            <h2>Your evidence review will appear here</h2>
+            <p>Load the demo scenario to add six synthetic signals across four services, then review the ranked lead and event timeline.</p>
+            <button class="text-button" id="emptyDemo" type="button">Load demo scenario <span aria-hidden="true">↗</span></button>
+          </div>
+          <section id="results" class="results" aria-live="polite" hidden>
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">RANKED SERVICE LEADS</p>
+                <h2>What may have started the incident</h2>
+              </div>
+              <span class="result-count" id="hypothesisCount">0 LEADS</span>
+            </div>
+            <div id="hypotheses" class="hypotheses"></div>
+            <section class="timeline-section">
+              <div class="section-heading">
+                <div>
+                  <p class="eyebrow">OBSERVED SIGNALS</p>
+                  <h2>Evidence timeline</h2>
+                </div>
+                <span class="result-count" id="timelineCount">0 EVENTS</span>
+              </div>
+              <ol id="timeline" class="timeline"></ol>
+            </section>
+            <p class="disclaimer" id="disclaimer"></p>
+          </section>
+        </div>
+      </section>
+
+      <footer>
+        <span>TraceLens · evidence before explanation</span>
+        <span>Local SQLite · no model calls</span>
+      </footer>
+    </main>
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>

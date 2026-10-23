@@ -20,6 +20,9 @@ tracelens = "tracelens.cli:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+tracelens = ["static/*.html", "static/*.css", "static/*.js"]
+
 [tool.ruff]
 line-length = 120
 target-version = "py311"
